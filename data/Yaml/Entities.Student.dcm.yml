@@ -1,0 +1,42 @@
+# Entities.Student.dcm.yml
+Entities\Student:
+  type: entity
+  repositoryClass: Entities\StudentRepository
+  table: student
+  schema: schema_name # The schema the table lies in, for platforms that support schemas (Optional, >= 2.5)
+  readOnly: true
+  indexes:
+    name_index:
+      columns: [ name ]
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    name:
+      type: string
+      length: 50
+    email:
+      type: string
+      length: 32
+      column: student_email
+      unique: true
+      options:
+        fixed: true
+        comment: Student's email address
+  manyToMany:
+    grades:
+      targetEntity: Grade
+      inverdesBy: students
+      joinTable:
+        name: students_grades
+        joinColumns:
+          student_id:
+            referencedColumnName: id
+          inverseJoinColumns:
+            grade_id:
+              referencedColumnName: id
+  lifecycleCallbacks:
+      prePersist: [ doStuffOnPrePersist, doOtherStuffOnPrePersistToo ]
+      postPersist: [ doStuffOnPostPersist ]
